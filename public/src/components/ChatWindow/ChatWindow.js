@@ -13,7 +13,8 @@ export default class ChatWindow extends Component {
     super();
     this.state = {
       messages: [],
-      text: ''
+      text: '',
+      person:''
     };
 
     this.handleChange = this.handleChange.bind( this );
@@ -31,15 +32,18 @@ export default class ChatWindow extends Component {
   handleChange( event ) {
     this.setState({ text: event.target.value });
   }
+  handleNameChange( event ) {
+    this.setState({ person: event.target.value });
+  }
 
   createMessage( event ) {
     const { text } = this.state;
     if ( event.key === "Enter" && text.length !== 0 ) {
-      axios.post( url, { text, time: dateCreator() } ).then( response => {
+      axios.post( url, { text, time: dateCreator(),person:this.state.person } ).then( response => {
         this.setState({ messages: response.data });
       });
 
-      this.setState({ text: '' });
+      this.setState({ text: '',person:'' });
     }
   }
 
@@ -57,18 +61,20 @@ export default class ChatWindow extends Component {
   }
 
   render() {
+    console.log(this.state.person);
     return (
       <div id="ChatWindow__container">
         <div id="ChatWindow__messagesParentContainer">
           <div id="ChatWindow__messagesChildContainer">
             {
               this.state.messages.map( message => (
-                <Message id={ message.id} key={ message.id } text={ message.text } time={ message.time } edit={ this.editMessage } remove={ this.removeMessage } />
+                <Message id={ message.id} key={ message.id } text={ message.text } time={ message.time } edit={ this.editMessage } remove={ this.removeMessage } person={message.person}/>
               ))
             }
           </div>
         </div>
         <div id="ChatWindow__newMessageContainer">
+          <input placeholder="Enter your name" onChange={(e)=>this.handleNameChange(e)} value={this.state.person}/>
           <input placeholder="What's on your mind? Press enter to send." 
                  onKeyPress={ this.createMessage }
                  onChange={ this.handleChange }

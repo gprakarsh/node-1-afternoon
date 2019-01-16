@@ -35,7 +35,7 @@ export default class Message extends Component {
     console.log( id, text );
     return (
       <div className="Message__container">
-        <span className="Message__time">{time}</span>
+        <span className="Message__time">{this.props.person}{" "}{time}</span>
         {
           editting
           ?
